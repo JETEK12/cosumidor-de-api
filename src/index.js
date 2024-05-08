@@ -1,17 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+function getCharacters(done) {
+  const result = fetch("https://rickandmortyapi.com/api/character");
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+  result
+    .then((response) => response.json())
+    .then((data) => {
+      done(data);
+    });
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+getCharacters((data) => {
+  data.results.forEach((personaje) => {
+    const article = document.createElement('article');
+    article.innerHTML = `
+      <div class="image-container">
+        <img alt="Personaje" />
+      </div>
+      <h2>${personaje.name}</h2>
+      <span>${personaje.status}</span>
+    `;
+    
+    const img = article.querySelector('img');
+    img.src = personaje.image;
+
+    const main = document.querySelector("main");
+    main.append(article);
+  });
+});
